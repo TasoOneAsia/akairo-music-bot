@@ -11,4 +11,11 @@ export const debugLogs = true;
 export const logsFile = true;
 
 // Footer Text on Embeds
-export const footerText = 'MusicBot | Created by Taso#0001';
+export const footerText = 'MusicBot Created by Taso#0001';
+
+//Music Commands
+export const musicOptions = {
+  leaveOnEmpty: false,
+  leaveOnStop: true,
+  leaveOnEnd: true,
+};

@@ -3,9 +3,10 @@ import { Message } from 'discord.js';
 import { Logger } from 'tslog';
 import { join } from 'path';
 import DebugLogger from '../utils/DebugLogger';
+import { Player } from 'discord-player';
 
 // Import Configuration Constants
-import { botPrefix } from '../Config';
+import { botPrefix, musicOptions } from '../Config';
 
 declare module 'discord-akairo' {
   interface AkairoClient {
@@ -13,12 +14,21 @@ declare module 'discord-akairo' {
     listenerHandler: ListenerHandler;
     inhibitorHandler: InhibitorHandler;
     log: Logger;
+    player: Player;
   }
 }
 
 export default class MusicClient extends AkairoClient {
   // Attach Logger
   public log = DebugLogger;
+
+  // Attach Music Player
+  public player = new Player(this, {
+    leaveOnEmpty: musicOptions.leaveOnEmpty,
+    leaveOnStop: musicOptions.leaveOnStop,
+    leaveOnEnd: musicOptions.leaveOnEnd,
+  });
+
   // Loads all files in the '../listeners/' directory as Listeners
   public listenerHandler: ListenerHandler = new ListenerHandler(this, {
     directory: join(__dirname, '..', 'listeners'),
@@ -59,6 +69,8 @@ export default class MusicClient extends AkairoClient {
     this.listenerHandler.setEmitters({
       commandHandler: this.commandHandler,
       listenerHandler: this.listenerHandler,
+      player: this.player,
+      process,
     });
     initLog.debug('Emitters Set');
     initLog.info('Loading Command and Listener Handlers');
