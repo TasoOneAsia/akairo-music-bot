@@ -1,7 +1,6 @@
 import { Command } from 'discord-akairo';
-import { Message, MessageEmbed } from 'discord.js';
-import { SendErrorEmbed } from '../../utils/EmbedUtils';
-import { WarningCol } from '../../utils/ColorsUtils';
+import { Message } from 'discord.js';
+import { SendErrorEmbed, BasicEmbed } from '../../utils/EmbedUtils';
 
 export default class StopMusicCommand extends Command {
   public constructor() {
@@ -17,15 +16,18 @@ export default class StopMusicCommand extends Command {
     });
   }
 
-  public async exec(msg: Message): Promise<Message> {
+  public async exec(msg: Message): Promise<void | Message> {
     if (!this.client.player.isPlaying(msg)) return SendErrorEmbed(msg, 'The Bot is not playing anything');
 
     this.client.player.stop(msg);
 
     this.client.log.debug(`[MUSIC] Queue has been stopped by ${msg.author.tag}`);
 
-    const embed = new MessageEmbed().setColor(WarningCol).setDescription('Queue has been cleared');
     //Clean up messages
-    msg.channel.send(embed);
+    msg.delete();
+
+    const newMsg = await BasicEmbed(msg, 'Queue has been stopped.');
+
+    newMsg.delete({ timeout: 10000 });
   }
 }

@@ -1,7 +1,7 @@
 import { Track } from 'discord-player';
 import { Message, MessageEmbed, EmbedField, MessageEmbedAuthor } from 'discord.js';
 import { footerText } from '../Config';
-import { ErrorCol, SuccessCol } from './ColorsUtils';
+import { ErrorCol, SuccessCol, WarningCol } from './ColorsUtils';
 
 interface EmbedOptions {
   color?: 'success' | 'warning' | 'error' | 'random';
@@ -65,6 +65,12 @@ export function MusicEmbed(msg: Message, { type, track }: MusicEmbed): Promise<M
     ])
     .setColor(SuccessCol)
     .setAuthor(`🎵 ${playerTitle} 🎵`);
+
+  return msg.channel.send(embed);
+}
+
+export function BasicEmbed(msg: Message, text: string): Promise<Message> {
+  const embed = new MessageEmbed().setColor(WarningCol).setDescription(text);
 
   return msg.channel.send(embed);
 }
